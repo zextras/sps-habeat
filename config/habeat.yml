@@ -1,0 +1,58 @@
+local:                                                      
+  whoami: "secondary"                                       # The role of this VM
+  dc_check: "primary"                                       # marker which dc script should check
+  role: "appserver"                                         # supported roles: appserver or consulserver or proxyserver
+  checkDownFile: "/var/tmp/appserverdown-habeat"            # template for lock file related with down state
+  checkPromotionFile: "/var/tmp/appserverprom-habeat"       # template for lock file related with promotion state
+  checkRestartReplicaFile: "/var/tmp/appserverrstopha"      # only app server lock file for restart replica lock file
+  provider: consul                                          # provider for external witness: hetrix, vcenter, consul
+  threads: 5                                                # carbonio ha promotion number of threads
+  proxy_switch: ""                                          # proxy switch tool: bgp
+  proxy_enable_activate: false                              # enable run proxy switch
+  proxy_enable_deactivate: false                            # enable run proxy reverse switch
+  disable_ha_module: false                                  # define if another app server down stop ha module of Carbonio
+  flush_cache: false                                        # define if we need flush cache for accounts after promotion
+  flush_arguments_a: false                                  # define if we need run flush cache for all application services. Used with  flush_cache: true
+  restart_replica: false                                    # run ha restartReplicas accounts
+
+primary:
+  proxy_ip: ""                                              # this value used for check availability of proxy in primary dc
+  appserver_ip: 10.66.64.12                                          # this value used for check availability of primary application server
+  consul_ips:                                               # this values used for check availability of consul servers in primary dc
+    - 10.66.64.7
+    - 10.66.64.11
+  consul_vmnames:                                           # this values used for check consul servers in monitoring server in primary dc
+    - kc-ha1-r8-svc1.demo.zextras.io
+    - kc-ha1-r8-svc2.demo.zextras.io
+  appserver_vmname: kc-ha1-r8-mbox1.demo.zextras.io           # this value used for check application server in monitoring server in primary dc
+  proxyserver_vmname: ""                                    # this value used for check proxy server in monitoring server in primary dc
+
+secondary:
+  proxy_ip: ""                                              # this value used for check availability of proxy in secondary dc
+  appserver_ip: 10.66.64.16                                 # this value used for check availability of application in secondary dc
+  consul_ips:                                               # this values used for check availability of consul servers in secondary dc
+    - 172.17.146.31
+  consul_vmnames:                                           # this values used for check consul servers in monitoring server in secondary dc
+    - kc-ha1-r8-svc3.demo.zextras.io
+  appserver_vmname: kc-ha1-r8-mbox2.demo.zextras.io              # this value used for check application server in monitoring server in secondary dc
+  proxyserver_vmname: ""                                    # this value used for check proxy server in monitoring server in secondary dc
+  proxy_switch:
+    bgp:                                                    # this value used for choose proxy switch
+      activate:                                             # list of command to activate proxy switch
+
+      deactivate:                                           # list of command to deactivate proxy switch
+
+hetrix:                                                     # hetrix provider config
+  hostname: api.hetrixtools.com
+  api_token: token
+
+vcenter:                                                    # vcenter provider config
+  hostname: ""
+  username: vcenter_admin
+  password: api_key
+
+consul:                                                     # consul provider config
+  hostname: 127.0.0.1
+  port: 8500
+  token: "9336f5f6-7725-ff01-07e1-b55a4b90620a"                                                   
+  

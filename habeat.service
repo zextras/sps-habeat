@@ -1,0 +1,11 @@
+[Unit]
+Description=Simple Habeat for Carbonio
+DefaultDependencies=no
+Wants=hafence.timer
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/habeat.py --config /etc/habeat/habeat.yml --log /var/log/habeat.log
+
+[Install]
+WantedBy=multi-user.target

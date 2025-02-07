@@ -1,0 +1,37 @@
+@startuml
+start
+:Start Habeat script;
+:Load configuration;
+if (Ping all servers in another DC) then (no reachable all)
+  if (Monitoring server shows at least one consul up) then (yes)
+    :message : Host not reachable but VM is running;
+  else (no)
+    if (lock file exist) then (yes)
+      :message: Consul recovery already started;
+    else (no)
+      :message: Consul server must be elected manually;
+      :service-discover stop;
+      :recovery procedure;
+      :service-discover start;
+      :create lockfile;
+      if (Response with error) then (no)
+        if (number of accounts < 0) then (yes)
+          :message: ccounts not present on {source_mail_host};
+        else (no)
+          :message: Run promoteAccounts;
+          :ha promoteAccounts;
+          :create lockfile;
+          if (flush_cache: True) then (yes)
+            :Flush the cache for promoted accounts;
+          endif
+        endif
+      else (yes)
+        :message: Promotiona were blocked;
+      endif
+    endif
+  endif
+else (reachable almost one)
+endif
+  :Normal exit;
+  stop
+@enduml

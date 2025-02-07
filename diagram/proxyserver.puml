@@ -1,0 +1,32 @@
+@startuml
+start
+:Start Habeat script;
+:Load configuration;
+if (proxy_switch not bgp) then (no)
+  :Normal exit;
+  stop
+endif
+if (Ping server in another DC) then (reachable)
+  :message: Host is reachable;
+  if (lockfile exist) then (yes)
+    :message : DC1 online deactivate bgp;
+  endif
+  :delete lockfile;
+else (no reachable)
+  if (Monitoring show proxy up) then (yes)
+    :message: Host not reachable but VM is running;
+  else (no)
+    if (lockfile exist) then (yes)
+      :message:VM is down and bgp switch in process;
+    else (no)
+      :message: proxy VM is down;
+      :message: Run bgp switch;
+      if (enable_activate) then (true)
+        :run activate commands;
+      endif
+    endif
+  endif
+endif
+  :Normal exit;
+  stop
+@enduml

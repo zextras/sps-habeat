@@ -1,0 +1,10 @@
+[Unit]
+Description=Run hafence check for Carboni HA
+Requires=habeat.service
+
+[Timer]
+Unit=habeat.service
+OnCalendar=*:0/5
+
+[Install]
+WantedBy=timers.target

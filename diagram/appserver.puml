@@ -1,0 +1,45 @@
+@startuml
+start
+:Start Habeat script;
+:Load configuration;
+if (Ping another AppServer) then (no reachable)
+  :message: Host no reachable;
+  if (Monitoring server shows another AppServer up) then (yes)
+    :message : Host not reachable but VM is running;
+  else (no)
+    if (lock file exist) then (yes)
+      :message: app VM is down and promotion in process;
+    elseif (Current AppServer is primary) then (yes)
+      :message: Promotion on primary dc should be done manually;
+      if (disable_ha_module: True) then (yes)
+        :message: Stop HA module Carbonio;
+        :stop HA module of Carbonio;
+      endif
+    else (no)
+      :message: app VM is down;
+      :ha  getAccountStatus;
+      if (Response with error) then (no)
+        if (number of accounts < 0) then (yes)
+          :message: ccounts not present on {source_mail_host};
+        else (no)
+          :message: Run promoteAccounts;
+          :ha promoteAccounts;
+          :create lockfile;
+          if (flush_cache: True) then (yes)
+            :Flush the cache for promoted accounts;
+          endif
+        endif
+      else (yes)
+        :message: Promotiona were blocked;
+      endif
+    endif
+  endif
+else (reachable)
+  :message : Host reachable;
+  if (AppServer primary and lock file exist and disable_ha_module: True) then (yes)
+    :start HA Carbonio module;
+  endif
+endif
+  :Normal exit;
+  stop
+@enduml
