@@ -23,3 +23,5 @@ then check the script works /usr/local/sbin/habeat.py then enable the service
 `systemctl enable habeat.timer`
 `systemctl start habeat.timer`
 
+copy logrotate/habeat in /etc/logrotate folder
+
