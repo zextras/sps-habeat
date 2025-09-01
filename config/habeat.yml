@@ -6,14 +6,14 @@ local:
   checkPromotionFile: "/var/tmp/appserverprom-habeat"       # template for lock file related with promotion state
   checkRestartReplicaFile: "/var/tmp/appserverrstopha"      # only app server lock file for restart replica lock file
   provider: consul                                          # provider for external witness: hetrix, vcenter, consul
-  threads: 5                                                # carbonio ha promotion number of threads
+  threads: 5                                                # carbonio mailreplica promotion number of threads
   proxy_switch: ""                                          # proxy switch tool: bgp
   proxy_enable_activate: false                              # enable run proxy switch
   proxy_enable_deactivate: false                            # enable run proxy reverse switch
-  disable_ha_module: false                                  # define if another app server down stop ha module of Carbonio
+  disable_ha_module: false                                  # define if another app server down stop mailreplica module of Carbonio
   flush_cache: false                                        # define if we need flush cache for accounts after promotion
   flush_arguments_a: false                                  # define if we need run flush cache for all application services. Used with  flush_cache: true
-  restart_replica: false                                    # run ha restartReplicas accounts
+  restart_replica: false                                    # run mailreplica restartReplicas accounts
 
 primary:
   proxy_ip: ""                                              # this value used for check availability of proxy in primary dc

@@ -33,8 +33,8 @@ class AppServerCheck(common.CommonCheck):
                 self.removeFile(checkPromotionFile)
             if self.lockFileExists(checkStopHaModule):
                 if disable_ha_module:
-                    self.logger_session.info("Start HA module Carbonio")
-                    self.runCmdRawOutput("su - zextras -c 'carbonio ha doStartService module'")
+                    self.logger_session.info("Start MailReplica module Carbonio")
+                    self.runCmdRawOutput("su - zextras -c 'carbonio mailreplica doStartService module'")
                     self.removeFile(checkStopHaModule)
         else:
             # if vcenter show VM status running
@@ -56,19 +56,19 @@ class AppServerCheck(common.CommonCheck):
                     self.logger_session.info("Promotion on primary dc should be done manually")
                     if not self.lockFileExists(checkStopHaModule):
                         if disable_ha_module:
-                            self.logger_session.info("Stop HA module Carbonio")
-                            self.runCmdRawOutput("su - zextras -c 'carbonio ha doStopService module'")
+                            self.logger_session.info("Stop MailReplica module Carbonio")
+                            self.runCmdRawOutput("su - zextras -c 'carbonio mailreplica doStopService module'")
                             self.createFile(checkStopHaModule, "")
                 else:
                     self.logger_session.info("app VM is down")
-                    output = self.runCmdJsonOutput("su - zextras -c '/opt/zextras/bin/carbonio --json  ha  getAccountStatus "
+                    output = self.runCmdJsonOutput("su - zextras -c '/opt/zextras/bin/carbonio --json  mailreplica  getAccountStatus "
                                           "mailHost {source_mail_host}'".format(source_mail_host=sourceMailHost))
                     if "response" in output:
                         accounts = output["response"]["values"]
                         if len(accounts) != 0:
                             self.logger_session.info("Run promoteAccounts")
                             output = self.runCmdRawOutput(
-                                "su - zextras -c '/opt/zextras/bin/carbonio --sync ha promoteAccounts source_mail_host "
+                                "su - zextras -c '/opt/zextras/bin/carbonio --sync mailreplica promoteAccounts source_mail_host "
                                 "{source_mail_host} threads {threads}'".format(threads=threads,
                                                                                source_mail_host=sourceMailHost))
                             self.createFile(checkDownFile, "")
@@ -85,9 +85,9 @@ class AppServerCheck(common.CommonCheck):
                             if restart_replica:
                                 for account in accounts:
                                     self.logger_session.info("Restart replication")
-                                    self.runCmdJsonOutput("su - zextras -c 'carbonio --json  ha pauseReplicas accounts "
+                                    self.runCmdJsonOutput("su - zextras -c 'carbonio --json  mailreplica pauseReplicas accounts "
                                                           "{account}'".format(account=account["accountName"]))
-                                    self.runCmdJsonOutput("su - zextras -c 'carbonio --json  ha restartReplicas accounts "
+                                    self.runCmdJsonOutput("su - zextras -c 'carbonio --json  mailreplica restartReplicas accounts "
                                                           "{account}'".format(account=account["accountName"]))
                         else:
                             self.logger_session.info("Accounts not present on {source_mail_host}".format(source_mail_host=sourceMailHost))

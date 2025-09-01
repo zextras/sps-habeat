@@ -19,7 +19,7 @@ if (Ping all servers in another DC) then (no reachable all)
           :message: ccounts not present on {source_mail_host};
         else (no)
           :message: Run promoteAccounts;
-          :ha promoteAccounts;
+          :mailreplica promoteAccounts;
           :create lockfile;
           if (flush_cache: True) then (yes)
             :Flush the cache for promoted accounts;
