@@ -14,7 +14,6 @@ class CONSUL(CommonProvider):
         port = self.config["consul"]["port"]
         token = self.config["consul"]["token"]
         c = consul.Consul(consulhost, port)
-
         members = c.agent.members()
         hostname = hostname.replace(".", "-")
         status = False

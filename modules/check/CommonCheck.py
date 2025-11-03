@@ -2,8 +2,6 @@ import os
 import subprocess
 import json
 import platform
-import modules.provider.vcenter as vcenter
-import modules.provider.hetrix as hetrix
 import modules.provider.consul as consul
 import yaml
 import socket
@@ -19,15 +17,10 @@ class CommonCheck:
 
     def statusCheckVM(self, hostname, provider, config):
         status = False
-        if provider == "hetrix":
-            hetrix_check = hetrix.HETRIX(config, self.logger_session)
-            status = hetrix_check.checkv3(hostname)
-        elif provider == "vcenter":
-            vcenter_check = vcenter.VCENTER(config, self.logger_session)
-            status = vcenter_check.check(hostname)
-        elif provider == "consul":
+        if provider == "consul":
             consul_check = consul.CONSUL(config, self.logger_session)
             status = consul_check.check(hostname)
+            self.logger_session.info("status".format(provider=provider))
         else:
             self.logger_session.error("Chosen provider {provider} doen't supported".format(provider=provider))
         return status

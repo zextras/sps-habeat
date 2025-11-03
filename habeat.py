@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
 import modules.servermode.appserver as appserver
-import modules.servermode.consulserver as consulserver
-import modules.servermode.proxyserver as proxyserver
 import argparse
 import yaml
 import logging
@@ -29,14 +27,8 @@ if __name__ == '__main__':
     if mode == "appserver":
         checkObj = appserver.AppServerCheck(args.configFile, logging)
         checkObj.check()
-    elif mode == "consulserver":
-        checkObj = consulserver.ConsulServerCheck(args.configFile, logging)
-        checkObj.check()
-    elif mode == "proxyserver":
-        checkObj = proxyserver.ProxyServerCheck(args.configFile, logging)
-        checkObj.check()
     else:
-        print("Mode {mode} isn't defined yet. Allowed modes: appserver, consulserver, proxyserver".format(mode=mode))
+        print("Mode {mode} isn't defined yet. Allowed modes: appserver".format(mode=mode))
 
     logging.info("-------- STOP Check HA habeat -----------")
 

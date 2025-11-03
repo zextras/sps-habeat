@@ -1,49 +1,29 @@
 local:                                                      
   whoami: "secondary"                                       # The role of this VM
   dc_check: "primary"                                       # marker which dc script should check
-  role: "appserver"                                         # supported roles: appserver or consulserver or proxyserver
+  role: "appserver"                                         # supported roles: appserver
   checkDownFile: "/var/tmp/appserverdown-habeat"            # template for lock file related with down state
   checkPromotionFile: "/var/tmp/appserverprom-habeat"       # template for lock file related with promotion state
   checkRestartReplicaFile: "/var/tmp/appserverrstopha"      # only app server lock file for restart replica lock file
-  provider: consul                                          # provider for external witness: hetrix, vcenter, consul
+  provider: consul                                          # upported roles: consul
   threads: 5                                                # carbonio ha promotion number of threads
-  proxy_switch: ""                                          # proxy switch tool: bgp
-  proxy_enable_activate: false                              # enable run proxy switch
-  proxy_enable_deactivate: false                            # enable run proxy reverse switch
   disable_ha_module: false                                  # define if another app server down stop ha module of Carbonio
-  flush_cache: false                                        # define if we need flush cache for accounts after promotion
-  flush_arguments_a: false                                  # define if we need run flush cache for all application services. Used with  flush_cache: true
+  flush_cache: true                                         # define if we need flush cache for accounts after promotion
+  flush_arguments_a: true                                   # define if we need run flush cache for all application services. Used with  flush_cache: true
   restart_replica: false                                    # run ha restartReplicas accounts
 
 primary:
-  proxy_ip: ""                                              # this value used for check availability of proxy in primary dc
-  appserver_ip: 10.10.10.12                                          # this value used for check availability of primary application server
-  consul_ips:                                               # this values used for check availability of consul servers in primary dc
-    - 10.10.10.7
-    - 10.10.10.11
-  consul_vmnames:                                           # this values used for check consul servers in monitoring server in primary dc
-    - svcs-ha-svc1.example.com
-    - svcs-ha-svc2.example.com
-  appserver_vmname: mbox-ha1.example.com           # this value used for check application server in monitoring server in primary dc
-  proxyserver_vmname: ""                                    # this value used for check proxy server in monitoring server in primary dc
+  appserver_ip: 10.11.12.10                                 # IP Address of primary server
+  appserver_vmname: primary_mailbox.example.com             # Hostname of primary server
+
 
 secondary:
-  proxy_ip: ""                                              # this value used for check availability of proxy in secondary dc
-  appserver_ip: 10.10.10.16                                 # this value used for check availability of application in secondary dc
-  consul_ips:                                               # this values used for check availability of consul servers in secondary dc
-    - 10.10.10.31
-  consul_vmnames:                                           # this values used for check consul servers in monitoring server in secondary dc
-    - svcs-ha-svc3.example.com
-  appserver_vmname: mbox-ha1.example.com              # this value used for check application server in monitoring server in secondary dc
-  proxyserver_vmname: ""                                    # this value used for check proxy server in monitoring server in secondary dc
-  proxy_switch:
-    bgp:                                                    # this value used for choose proxy switch
-      activate:                                             # list of command to activate proxy switch
-
-      deactivate:                                           # list of command to deactivate proxy switch
+  appserver_ip: 10.11.12.20                                 # IP Address of replica server
+  appserver_vmname: replica_mailbox.example.com             # Hostname of replica server
 
 consul:                                                     # consul provider config
   hostname: 127.0.0.1
   port: 8500
-  token: "4546546-7725-ff01-07e1-b55a4b90620a"                                                   
+  token: "123456-1234-aa01-bb02-b55a4b90620a"               #Token obtained running service-discover bootstrap-token
+                                      
   

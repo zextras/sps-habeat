@@ -37,20 +37,18 @@ class AppServerCheck(common.CommonCheck):
                     self.runCmdRawOutput("su - zextras -c 'carbonio ha doStartService module'")
                     self.removeFile(checkStopHaModule)
         else:
-            # if vcenter show VM status running
             if self.statusCheckVM(self.configData[dc]['appserver_vmname'], provider, self.configData):
                 self.logger_session.info("Host not reachable but VM is running")
                 if self.lockFileExists(checkPromotionFile):
                     self.removeFile(checkPromotionFile)
-            # if vcenter show VM status stopped
             else:
                 if self.lockFileExists(checkPromotionFile):
                     self.logger_session.info("app VM is down and promotion in process ")
                     output = self.runCmdJsonOutput("su - zextras -c 'carbonio --json core getAllOperations'")
-                    # if no carbonio process(replace with processID)
-                    # if len(output["response"]["operationList"]) == 0:
-                    #     self.logger_session.info("Promotion not in process.")
-                    #     self.removeFile(checkPromotionFile)
+                    # TODO: understand when a promotion is in place, this commands refer to geenric operations in the queue
+                    if len(output["response"]["operationList"]) == 0:
+                        self.logger_session.info("Promotion not in process.")
+                        self.removeFile(checkPromotionFile)
                 elif self.configData['local']['whoami'] == "primary":
                     self.logger_session.info(self.configData['local']['whoami'])
                     self.logger_session.info("Promotion on primary dc should be done manually")
@@ -92,4 +90,4 @@ class AppServerCheck(common.CommonCheck):
                         else:
                             self.logger_session.info("Accounts not present on {source_mail_host}".format(source_mail_host=sourceMailHost))
                     else:
-                        self.logger_session.info("Promotiona were blocked ")
+                        self.logger_session.info("Promotion were blocked ")
